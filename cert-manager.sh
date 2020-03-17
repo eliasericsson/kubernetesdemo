@@ -33,3 +33,21 @@ kubectl apply -f frontend-ingress-tls.yaml
 
 # Describe the certificate until you see a successful issuing at the bottom
 kubectl describe certificate frontend
+
+# Get the template for capture order ingress
+wget http://aksworkshop.io/yaml-solutions/advanced/captureorder-ingress-tls.yaml
+
+# Replace the token with the external IP of the ingress controller
+sed "s/_INGRESS_CONTROLLER_EXTERNAL_IP_/$INGRESSIP/g" captureorder-ingress-tls.yaml > tmp; mv tmp captureorder-ingress-tls.yaml
+
+# Apply the template
+kubectl apply -f captureorder-ingress-tls.yaml
+
+# Get the new template for the frontend
+wget http://aksworkshop.io/yaml-solutions/advanced/frontend-deployment.yaml
+
+# Replace the tokens
+sed "s/_INGRESS_CONTROLLER_EXTERNAL_IP_/$INGRESSIP/g" frontend-deployment.yaml.1 > tmp; mv tmp frontend-deployment.yaml
+
+# Apply the new template
+kubectl apply -f frontend-deployment.yaml
